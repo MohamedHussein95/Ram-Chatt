@@ -43,7 +43,6 @@ socketIO.on('connection', (socket) => {
 	console.log(`⚡: ${socket.id} user just connected!`);
 
 	socket.on('send-message', (chatId, sId) => {
-		console.log(chatId);
 		socket.emit('new-message', chatId, sId);
 	});
 	// Handle the typing event
@@ -77,7 +76,6 @@ socketIO.on('connection', (socket) => {
 	});
 	// Handle new messages
 	socket.on('new-message', (uid, cid, message) => {
-		console.log(message);
 		socket.broadcast.emit('new-message', uid, cid, message);
 	});
 	//handle viewed messages
