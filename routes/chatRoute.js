@@ -12,6 +12,7 @@ import {
 	deleteMessage,
 	reportChat,
 	getChatLastMessage,
+	updateMessage,
 } from '../controllers/chatControllers.js';
 import { protect } from '../middlewares/authMiddlewar.js';
 
@@ -52,5 +53,7 @@ router.post('/messages/send/:chatId', protect, sendMessage);
 
 //delete a message
 router.delete('/messages/delete/:chatId', protect, deleteMessage);
+//update a message
+router.put('/messages/update/:chatId', protect, updateMessage);
 
 export default router;

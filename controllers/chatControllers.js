@@ -22,7 +22,6 @@ const getAllChats = asyncHandler(async (req, res) => {
 const createChat = asyncHandler(async (req, res) => {
 	// Extract the necessary data from the request
 	const { users, messages, createdAt } = req.body;
-	console.log(users, messages);
 	// Check if these users exist
 	const usersExist = await User.find({
 		_id: { $in: users },
@@ -171,6 +170,7 @@ const getChatMessages = asyncHandler(async (req, res) => {
 					name: message?.sender.lastName,
 					avatar: message?.sender.avatar,
 				},
+				delivered: true,
 			});
 		})
 	);
@@ -295,6 +295,37 @@ const deleteMessage = asyncHandler(async (req, res) => {
 	res.send('message deleted!');
 });
 
+//update Message
+const updateMessage = asyncHandler(async (req, res) => {
+	const chatId = req.params.chatId;
+	const userId = req.body.userId;
+	const message = req.body.message; // Assuming the user ID is sent as `userId` in the request body
+
+	// Retrieve the chat by its ID from the database
+	const chat = await Chat.findById(chatId);
+	if (!chat) {
+		res.status(404);
+		throw new Error('Chat not found');
+	}
+
+	const messageContent = chat.messages.find((m) => m.content === message);
+
+	if (!messageContent) {
+		return res.status(400);
+	}
+
+	if (messageContent.sender.equals(userId)) {
+		return res.status(400);
+	}
+
+	message.delivered = true;
+	message.seen = true;
+
+	await chat.save();
+
+	return res.status(200);
+});
+
 //Delete Message
 const reportChat = asyncHandler(async (req, res) => {
 	const chatId = req.params.chatId;
@@ -404,6 +435,7 @@ export {
 	createChat,
 	deleteChat,
 	deleteMessage,
+	updateMessage,
 	getAllChats,
 	getChatMessages,
 	getUserChats,

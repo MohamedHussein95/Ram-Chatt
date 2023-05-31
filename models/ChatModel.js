@@ -23,6 +23,13 @@ const ChatSchema = new mongoose.Schema(
 					type: Date,
 					default: new Date(),
 				},
+				delivered: {
+					type: String,
+				},
+				seen: {
+					type: String,
+					default: false,
+				},
 			},
 		],
 		status: {

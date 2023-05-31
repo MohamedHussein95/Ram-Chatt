@@ -65,8 +65,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
 	// Create the user with the intro song URL
 	const user = await User.create({
-		firstName,
-		lastName,
+		firstName: firstName.trim(),
+		lastName: lastName.trim(),
 		fullName: `${firstName} ${lastName}`,
 		email,
 		password,
@@ -598,6 +598,32 @@ const searchUser = asyncHandler(async (req, res) => {
 		return res.json([]);
 	}
 
+	if (user === '*') {
+		// find all users
+		const users = await User.find({}).select(
+			'fullName profileData avatar introSong userName'
+		);
+		// Find if any of these users have a chat with the current user
+		let updatedUsers = [];
+		for (const user of users) {
+			if (user._id.toString() === req.user?._id.toString()) {
+				continue;
+			}
+
+			const chatExists = await Chat.findOne({
+				users: { $all: [Id, user._id] },
+			});
+			if (chatExists) {
+				user.chatId = chatExists._id;
+				console.log(user.chatId);
+			}
+			updatedUsers.push(user);
+		}
+		//remove the user themselves from the search
+		updatedUsers = updatedUsers.filter((user) => user._id !== Id);
+
+		return res.json(updatedUsers);
+	}
 	// Construct the query object to search for matching users
 	const query = {
 		$or: [

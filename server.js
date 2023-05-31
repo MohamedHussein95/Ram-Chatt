@@ -52,14 +52,14 @@ socketIO.on('connection', (socket) => {
 	});
 
 	// Handle posts
-	socket.on('posted', () => {
-		socket.broadcast.emit('posted');
-		socket.emit('posted');
+	socket.on('add-post', (res) => {
+		socket.broadcast.emit('add-post', res);
+		socket.emit('add-post', res);
 	});
 	// Handle liked and dislike posts
-	socket.on('liked', (id) => {
-		socket.broadcast.emit('liked', id);
-		socket.emit('liked', id);
+	socket.on('liked', (res) => {
+		socket.broadcast.emit('liked', res);
+		socket.emit('liked', res);
 	});
 	socket.on('disliked', (id) => {
 		socket.broadcast.emit('disliked', id);
@@ -71,13 +71,19 @@ socketIO.on('connection', (socket) => {
 		socket.emit('add-comment', id);
 	});
 	// Handle new chats
-	socket.on('new-chat', (id) => {
-		socket.broadcast.emit('new-chat', id);
-		socket.emit('new-chat', id);
+	socket.on('new-chat', (sid, uid) => {
+		socket.broadcast.emit('new-chat', sid, uid);
+		socket.emit('new-chat', sid, uid);
 	});
 	// Handle new messages
-	socket.on('new-message', (id, message) => {
-		socket.broadcast.emit('new-message', id, message);
+	socket.on('new-message', (uid, cid, message) => {
+		console.log(message);
+		socket.broadcast.emit('new-message', uid, cid, message);
+	});
+	//handle viewed messages
+	socket.on('message-viewed', (id, uid) => {
+		socket.broadcast.emit('message-viewed', id, uid);
+		socket.emit('message-viewed', id, uid);
 	});
 	// Handle typing
 	socket.on('typing', (id) => {
@@ -85,6 +91,14 @@ socketIO.on('connection', (socket) => {
 	});
 	socket.on('not-typing', (id) => {
 		socket.broadcast.emit('not-typing', id);
+	});
+	// Handle online user
+	socket.on('user-active', (id) => {
+		socket.broadcast.emit('user-active', id);
+	});
+	// Handle offline user
+	socket.on('user-inactive', (id) => {
+		socket.broadcast.emit('user-inactive', id);
 	});
 
 	socket.on('disconnect', () => {

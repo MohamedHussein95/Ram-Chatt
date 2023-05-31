@@ -14,7 +14,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 	//find all posts
 	const posts = await Post.find({}).populate(
 		'createdBy',
-		'fullName userName avatar pushToken'
+		'fullName userName avatar pushToken verified'
 	);
 
 	res.json(posts);
@@ -26,7 +26,7 @@ const getAPost = asyncHandler(async (req, res) => {
 	//find all posts
 	const post = await Post.findById(postId).populate(
 		'createdBy',
-		'fullName userName avatar pushToken'
+		'fullName userName avatar pushToken verified'
 	);
 
 	if (!post) {
@@ -118,7 +118,7 @@ const likePost = asyncHandler(async (req, res) => {
 
 	const post = await Post.findById(postId).populate(
 		'createdBy',
-		'fullName userName avatar pushToken'
+		'fullName userName avatar pushToken verified'
 	);
 
 	if (!post) {
@@ -158,7 +158,7 @@ const dislikePost = asyncHandler(async (req, res) => {
 	}
 	const post = await Post.findById(postId).populate(
 		'createdBy',
-		'fullName userName avatar'
+		'fullName userName avatar pushToken verified'
 	);
 
 	if (!post) {
@@ -218,7 +218,7 @@ const getComments = asyncHandler(async (req, res) => {
 
 	const post = await Post.findById(postId).populate({
 		path: 'metaData.comments.sentBy',
-		select: 'fullName avatar userName',
+		select: 'fullName avatar userName pushToken verified',
 	});
 
 	if (!post) {
