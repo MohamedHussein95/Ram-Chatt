@@ -22,14 +22,18 @@ const port = process.env.PORT;
 
 const socketIO = new Server(server, {
 	cors: {
-		origin: ['http://localhost:19000'],
+		origin: '*',
 	},
 });
 
 app.use(express.json({ extended: false, limit: '4mb' })); // Parse JSON request bodies with a limit of 4MB
 app.use(express.urlencoded({ extended: false })); // Parse URL-encoded request bodies
 
-app.use(cors()); // Enable Cross-Origin Resource Sharing (CORS)
+app.use(
+	cors({
+		origin: '*',
+	})
+); // Enable Cross-Origin Resource Sharing (CORS)
 app.use(cookieParser()); // Parse cookies in incoming requests
 app.use(express.static('public')); // Serve static files from the 'public' directory
 app.use('/uploads', express.static('uploads'));
